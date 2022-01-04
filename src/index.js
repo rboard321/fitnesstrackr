@@ -1,12 +1,18 @@
 import React, {useState, useEffect} from "react"
 import ReactDOM from "react-dom"
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
-import Routines from './components/Routines'
-
+import Homepage from "./components/Homepage";
+import Routines from './components/Routines';
+import Login from './components/Login';
+import Activities from './components/Activities';
+import Register from "./components/Register";
+import Profile from "./components/Profile";
 
 const App = () => {
   const [routines, setRoutines] = useState([]);
-  console.log(routines)
+  const [activities, setActivities] = useState([]);
+  const [token, setToken] = useState();
+  
   
   return(
       <>
@@ -20,13 +26,42 @@ const App = () => {
       </header>
     <Routes>
         <Route 
+        path="/"
+        element={
+          <Homepage/>
+        }
+        />
+        <Route
+        path="api/users/:method"
+        element={
+          <Login
+          setToken={setToken}
+          />
+        }
+        />
+        <Route 
         exact path="api/routines"
           element={
             <Routines
               setRoutines={setRoutines}
               routines={routines}
+              token={token}
+              settoken={setToken}
             />
           }/>
+          <Route 
+        exact path="api/activities"
+          element={
+            <Activities
+              setActivities={setActivities}
+              activities={activities}
+              token={token}
+              settoken={setToken}
+            />
+          }/>
+          <Route
+          exact path="api/"
+          />
     
 
 

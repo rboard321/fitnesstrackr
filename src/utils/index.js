@@ -10,9 +10,9 @@ export const callApi = async ({ url, method, token, body }) => {
       },
       body: JSON.stringify(body),
     };
-    options["authorizaation"] = `Bearer ${token}`;
-    const response = await fetch(`${REACT_APP_BASE_URL}${url}`, options);
-    const data = await response.json();
+    options["authorization"] = `Bearer ${token}`;
+    const respObject = await fetch(`${REACT_APP_API_URL}${url}`, options);
+    const data = await respObject.json();
     if (data.error) {
       throw data.error;
     }
