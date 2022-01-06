@@ -6,7 +6,7 @@ const { REACT_APP_API_URL = "https://fitnesstrac-kr.herokuapp.com/api" } =
 const Register = ({ setToken }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-console.log("username>>>>>",username)
+  console.log("username>>>>>", username);
   return (
     <>
       <h1>Login/Register</h1>

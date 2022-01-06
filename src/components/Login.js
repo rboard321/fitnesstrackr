@@ -2,48 +2,44 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useParams } from "react-router";
 import { callApi } from "../utils";
-const { REACT_APP_API_URL} =
-  process.env;
-  
+const { REACT_APP_API_URL } = process.env;
 
-const Login = ({ setToken }) => {
+const Login = ({ setUserId, setLoggedin, loggedIn, setToken }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [passwordConfirm, setPasswordConfirm] = useState("");
-  const [loggedIn, setLoggedin] = useState(false);
+
   const [isMatched, setIsMatched] = useState(false);
-  console.log('username>>>>', username)
-  console.log('password>>>>', password)
   const params = useParams();
-  console.log('params>>>',params.method)
+  console.log(loggedIn);
   let navigate = useNavigate();
 
   function logIn(resp) {
-    console.log('resp from login>>>', resp)
-    if (resp.data) {
-      setToken(resp.data.token);
-      localStorage.setItem("token", resp.data.token);
-      if (resp.data.token == "") {
+    
+    if (resp) {
+      setUserId(resp.user.id)
+      setToken(resp.token);
+      localStorage.setItem("token", resp.token);
+      if (resp.token == "") {
         setLoggedin(false);
       } else {
         setLoggedin(true);
-        navigate("/profile");
+        navigate("/api/myroutines");
       }
     }
   }
 
   async function loginRoutine() {
-    
     try {
-      
-      const resp = await callApi({url: `/users/${params.method}`, 
-        method: 'POST',
+      const resp = await callApi({
+        url: `/users/${params.method}`,
+        method: "POST",
         body: {
           username,
-          password
-        }
+          password,
+        },
       });
-     
+
       logIn(resp);
     } catch (error) {
       console.log(error);
@@ -92,7 +88,7 @@ const Login = ({ setToken }) => {
               onChange={(event) => setPasswordConfirm(event.target.value)}
             ></input>
           ) : null}
-          <Link to="/register">Register</Link>
+          <Link to="/api/users/register">Register</Link>
         </form>
         {password.length < 8 && params.method === "register" ? (
           <div>
