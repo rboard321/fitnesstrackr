@@ -20,6 +20,10 @@
   .ifLoggedOut {
     display: none;
   }
+
+  .false{
+    display:none
+  }
   
   .title{
     padding-left: 10px;
