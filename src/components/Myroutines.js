@@ -20,8 +20,11 @@ const Myroutines = ({
   const [count, setCount] = useState();
   const [duration, setDuration] = useState();
   const [activityFields, setActivityFields] = useState(false);
+  const [editingActivity, setEditingActivity] = useState(false);
   const [isPublic, setIsPublic] = useState(false);
-  console.log("activityFields>>>>", activityFields);
+  const [editRoutineName, setEditRoutineName] = useState("");
+  const [editRoutineGoal, setEditRoutineGoal] = useState("");
+
   const fetchRoutines = async () => {
     const resp = await fetch(`${REACT_APP_API_URL}/routines`);
     const data = await resp.json();
@@ -45,12 +48,12 @@ const Myroutines = ({
         body: JSON.stringify({
           name: routineName,
           goal: routineGoal,
-          isPublic: null,
+          isPublic: isPublic,
         }),
       });
       const routine = await resp.json();
 
-      console.log("created routine>>", routine);
+      fetchRoutines();
     } catch (error) {
       console.error(error);
     }
@@ -72,13 +75,102 @@ const Myroutines = ({
           }),
         }
       );
-      const activityToAdd = await resp.json();
-
-      console.log("created routine>>", activityToAdd);
+      fetchRoutines();
+      setActivityFields(false);
     } catch (error) {
       console.error(error);
     }
   };
+  
+  const handleEditRoutine = async (routineId) => {
+    console.log(editRoutineName)
+    console.log(editRoutineGoal)
+    try {
+      const resp = await fetch(
+        `${REACT_APP_API_URL}/routines/${routineId}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+          body: JSON.stringify({
+            name: editRoutineName,
+            goal: editRoutineGoal
+          }),
+        }
+      );
+      const data = await resp.json()
+      console.log(data)
+      fetchRoutines()
+  } catch(error){
+    console.error(error)
+  }
+};
+
+  const handleDeleteRoutine = async (routineId) => {
+    console.log(routineId);
+    try {
+      const resp = await fetch(`${REACT_APP_API_URL}/routines/${routineId}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+      fetchRoutines();
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const handleEditActivity = async (routineActivityId) => {
+    try {
+      const resp = await fetch(
+        `${REACT_APP_API_URL}/routine_activities/${routineActivityId}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+          body: JSON.stringify({
+            count: count,
+            duration: duration,
+          }),
+        }
+      );
+
+      fetchRoutines();
+      setEditingActivity(false);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const handleDeleteActivity = async (routineActivityId) => {
+    try {
+      const resp = await fetch(
+        `${REACT_APP_API_URL}/routine_activities/${routineActivityId}`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+
+      fetchRoutines();
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  function handleAddActivity(routine) {
+    setActivityFields(true);
+    setRoutineId(routine);
+  }
 
   return (
     <>
@@ -113,67 +205,135 @@ const Myroutines = ({
             <h2>{routine.name}</h2>
             <h4>{routine.goal}</h4>
             <h5>Creator: {routine.creatorName}</h5>
-            <form
-              onSubmit={async (event) => {
-                event.preventDefault();
-                setActivityFields(true);
-                setRoutineId(routine.id);
+            <button
+              value={routine.id}
+              onClick={(event) => handleDeleteRoutine(event.target.value)}
+            >
+              Delete Routine
+            </button>
+            
+              <button
+                
+                onClick={
+                  (() => setActivityFields(true))
+                }
+              >
+                Edit Routine
+              </button>
+              <input
+                type="text"
+                placeholder="name"
+                className={`${activityFields}`}
+                onChange={(event) => setEditRoutineName(event.target.value)}
+              />
+              <input
+                type="text"
+                placeholder="goal"
+                className={`${activityFields}`}
+                onChange={(event) => setEditRoutineGoal(event.target.value)}
+              />
+              <button onClick={() => handleEditRoutine(routine.id)}>
+                Submit
+              </button>
+            
+            <button
+              value={routine.id}
+              onClick={() => {
+                handleAddActivity(routine.id);
               }}
             >
-              <button>Add Activity</button>
+              Add Activity
+            </button>
 
+            <form
+              onSubmit={(event) => {
+                event.preventDefault();
+                addActivities();
+                fetchRoutines();
+              }}
+            >
               <select
                 className="activity"
                 className={`${activityFields}`}
-                onClick={(event) => setActivityId(activity.id)}
+                onChange={(event) => setActivityId(event.target.value)}
               >
                 {activities.map((activity) => (
-                  <option key={activity.id}>{activity.name}</option>
+                  <option value={activity.id} key={activity.id}>
+                    {activity.name}
+                  </option>
                 ))}
               </select>
 
               <input
                 type="text"
-                value="count"
+                placeholder="count"
                 className={`${activityFields}`}
                 onChange={(event) => setCount(event.target.value)}
               />
               <input
                 type="text"
-                value="duration"
+                placeholder="duration"
                 className={`${activityFields}`}
                 onChange={(event) => setDuration(event.target.value)}
               />
-              <input
-                type="submit"
-                value="submit"
-                className={`${activityFields}`}
-              />
 
-              <button>Delete</button>
+              <button value="submit" className={`${activityFields}`}>
+                Submit
+              </button>
             </form>
 
-            <form
-              onSubmit={async (event) => {
-                event.preventDefault();
-                addActivities();
-                setActivityId(activity.id);
-              }}
-            ></form>
-
             <h2>Activities:</h2>
-            {routine.activities.map((activity) => (
-              <div className="activity" key={activity.id}>
-                <h3>{activity.name}</h3>
-                <h4>Description: {activity.description}</h4>
-                <h4>Count: {activity.count}</h4>
-                <h4>Duration: {activity.duration}</h4>
-                <form>
-                  <button>Edit</button>
-                  <button>Remove</button>
-                </form>
-              </div>
-            ))}
+            {routine.activities.map((activity) => {
+              return (
+                <div className="activity" key={activity.id}>
+                  <h3>{activity.name}</h3>
+                  <h4>Description: {activity.description}</h4>
+                  <h4>Count: {activity.count}</h4>
+                  <h4>Duration: {activity.duration}</h4>
+                  <form>
+                    <input
+                      type="text"
+                      placeholder="count"
+                      className={`${editingActivity}`}
+                      onChange={(event) => setCount(event.target.value)}
+                    />
+                    <input
+                      type="text"
+                      placeholder="duration"
+                      className={`${editingActivity}`}
+                      onChange={(event) => setDuration(event.target.value)}
+                    />
+                    <button
+                      className={`${editingActivity}`}
+                      onClick={(event) => {
+                        event.preventDefault();
+                        handleEditActivity(activity.routineActivityId);
+                      }}
+                    >
+                      Submit
+                    </button>
+                    <button
+                      value={activity.routineActivityId}
+                      onClick={(event) => {
+                        event.preventDefault();
+                        setEditingActivity(true);
+                      }}
+                    >
+                      Edit Activity
+                    </button>
+                    <button
+                      value={activity.routineActivityId}
+                      onClick={(event) => {
+                        event.preventDefault(),
+                          handleDeleteActivity(event.target.value);
+                      }}
+                    >
+                      Remove Activity
+                    </button>
+                  </form>
+                </div>
+              );
+            })}
           </div>
         ) : null
       )}
