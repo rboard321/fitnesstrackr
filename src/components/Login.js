@@ -39,10 +39,9 @@ const Login = ({ setUserId, setLoggedin, loggedIn, setToken }) => {
           password,
         },
       });
-
       logIn(resp);
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   }
   if (loggedIn === false) {
@@ -90,6 +89,7 @@ const Login = ({ setUserId, setLoggedin, loggedIn, setToken }) => {
           ) : null}
           <Link to="/api/users/register">Register</Link>
         </form>
+        {}
         {password.length < 8 && params.method === "register" ? (
           <div>
             <h3>Your password must be 8 characters long</h3>

@@ -21,27 +21,29 @@ const App = () => {
   const [activities, setActivities] = useState([]);
   const [token, setToken] = useState();
   const [loggedIn, setLoggedin] = useState(false);
-  const [userId, setUserId] = useState('');
-  
+  const [userId, setUserId] = useState("");
+
   let navigate = useNavigate();
 
   return (
     <>
       <header>
         <h1 className="headerTitle">Fitness Trac.kr</h1>
-        <Link to="/">Home</Link> <Link to="api/routines">Routines</Link>{" "}
+        <Link className={"title"} to="/">Home</Link> 
+        <Link to="api/routines">Routines</Link>{" "}
         {loggedIn ? <Link to="api/myroutines">My Routines</Link> : null}
         {loggedIn ? " " : null}
         <Link to="api/activities">Activities</Link>{" "}
-        <Link to="api/users/login">Login/Register</Link>
+        <Link className={token ? "ifLoggedOut" : ""}to="api/users/login">Login/Register</Link>
         <button
           className={token ? "" : "ifLoggedOut"}
           onClick={() => {
             localStorage.removeItem("token");
             setLoggedin(false);
             navigate("/");
+            window.location.reload(false); 
           }}
-        ></button>
+        >Log Out</button>
       </header>
       <Routes>
         <Route path="/" element={<Homepage />} />
