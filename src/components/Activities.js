@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { callApi } from "../utils";
-import { Link, useNavigate } from "react-router-dom";
+
+import { useNavigate } from "react-router-dom";
 const { REACT_APP_API_URL } = process.env;
 
 const Activities = ({ loggedIn, setActivities, activities, token }) => {
@@ -10,6 +10,7 @@ const Activities = ({ loggedIn, setActivities, activities, token }) => {
   let navigate = useNavigate()
 
   const fetchActivities = async () => {
+    
     const resp = await fetch(`${REACT_APP_API_URL}/activities`);
     const data = await resp.json();
     if (data) {

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState} from "react";
 import ReactDOM from "react-dom";
 import {
   BrowserRouter as Router,
@@ -12,8 +12,7 @@ import Routines from "./components/Routines";
 import Myroutines from "./components/Myroutines";
 import Login from "./components/Login";
 import Activities from "./components/Activities";
-import Register from "./components/Register";
-import Profile from "./components/Profile";
+
 
 const App = () => {
   const [routines, setRoutines] = useState([]);
