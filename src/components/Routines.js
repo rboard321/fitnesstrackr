@@ -5,6 +5,7 @@ const { REACT_APP_API_URL } = process.env;
 
 const Routines = ({ setRoutines, routines, token, setToken }) => {
   const fetchRoutines = async () => {
+    console.log(`${REACT_APP_API_URL}/routines`)
     const resp = await fetch(`${REACT_APP_API_URL}/routines`);
     const data = await resp.json();
     if (data) {
