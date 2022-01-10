@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { callApi } from "../utils";
-import { Link } from "react-router-dom";
 
+const APIURL = `https://fitnesstrac-kr.herokuapp.com/api`
 const { REACT_APP_API_URL } = process.env;
 
 const Myroutines = ({
@@ -26,7 +25,7 @@ const Myroutines = ({
   const [editRoutineGoal, setEditRoutineGoal] = useState("");
 
   const fetchRoutines = async () => {
-    const resp = await fetch(`${REACT_APP_API_URL}/routines`);
+    const resp = await fetch(`${APIURL}/routines`);
     const data = await resp.json();
     if (data) {
       setMyRoutines(data);
@@ -39,7 +38,7 @@ const Myroutines = ({
 
   const createRoutine = async () => {
     try {
-      const resp = await fetch(`${REACT_APP_API_URL}/routines`, {
+      const resp = await fetch(`${APIURL}/routines`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -62,7 +61,7 @@ const Myroutines = ({
   const addActivities = async () => {
     try {
       const resp = await fetch(
-        `${REACT_APP_API_URL}/routines/${routineId}/activities`,
+        `${APIURL}/routines/${routineId}/activities`,
         {
           method: "POST",
           headers: {
@@ -87,7 +86,7 @@ const Myroutines = ({
     console.log(editRoutineGoal)
     try {
       const resp = await fetch(
-        `${REACT_APP_API_URL}/routines/${routineId}`,
+        `${APIURL}/routines/${routineId}`,
         {
           method: "PATCH",
           headers: {
@@ -111,7 +110,7 @@ const Myroutines = ({
   const handleDeleteRoutine = async (routineId) => {
     console.log(routineId);
     try {
-      const resp = await fetch(`${REACT_APP_API_URL}/routines/${routineId}`, {
+      const resp = await fetch(`${APIURL}/routines/${routineId}`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
@@ -127,7 +126,7 @@ const Myroutines = ({
   const handleEditActivity = async (routineActivityId) => {
     try {
       const resp = await fetch(
-        `${REACT_APP_API_URL}/routine_activities/${routineActivityId}`,
+        `${APIURL}/routine_activities/${routineActivityId}`,
         {
           method: "PATCH",
           headers: {
@@ -151,7 +150,7 @@ const Myroutines = ({
   const handleDeleteActivity = async (routineActivityId) => {
     try {
       const resp = await fetch(
-        `${REACT_APP_API_URL}/routine_activities/${routineActivityId}`,
+        `${APIURL}/routine_activities/${routineActivityId}`,
         {
           method: "DELETE",
           headers: {

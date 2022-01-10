@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 
 import { useNavigate } from "react-router-dom";
+const APIURL = `https://fitnesstrac-kr.herokuapp.com/api`
 const { REACT_APP_API_URL } = process.env;
 
 const Activities = ({ loggedIn, setActivities, activities, token }) => {
@@ -11,7 +12,7 @@ const Activities = ({ loggedIn, setActivities, activities, token }) => {
 
   const fetchActivities = async () => {
     
-    const resp = await fetch(`${REACT_APP_API_URL}/activities`);
+    const resp = await fetch(`${APIURL}/activities`);
     const data = await resp.json();
     if (data) {
       setActivities(data);
@@ -25,7 +26,7 @@ const Activities = ({ loggedIn, setActivities, activities, token }) => {
   const createActivity = async () => {
     console.log(activityDescription)
     try {
-      const resp = await fetch(`${REACT_APP_API_URL}/activities`, {
+      const resp = await fetch(`${APIURL}/activities`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
