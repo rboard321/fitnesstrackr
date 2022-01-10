@@ -60,7 +60,7 @@
     height: 100%;
   }
   
-  .routine {
+  .routine, .activity {
     display: flex;
     flex-direction: column;
     padding-left: 20px;
