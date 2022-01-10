@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-const APIURL = `https://fitnesstrac-kr.herokuapp.com/api`
+const APIURL = `https://fitnesstrac-kr.herokuapp.com/api`;
 const { REACT_APP_API_URL } = process.env;
 
 const Myroutines = ({
@@ -9,7 +9,6 @@ const Myroutines = ({
   setMyRoutines,
   MyRoutines,
   token,
-  setToken,
   loggedIn,
 }) => {
   const [routineName, setRoutineName] = useState("");
@@ -60,55 +59,46 @@ const Myroutines = ({
 
   const addActivities = async () => {
     try {
-      const resp = await fetch(
-        `${APIURL}/routines/${routineId}/activities`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            activityId: activityId,
-            count: count,
-            duration: duration,
-          }),
-        }
-      );
+      const resp = await fetch(`${APIURL}/routines/${routineId}/activities`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          activityId: activityId,
+          count: count,
+          duration: duration,
+        }),
+      });
       fetchRoutines();
       setActivityFields(false);
     } catch (error) {
       console.error(error);
     }
   };
-  
+
   const handleEditRoutine = async (routineId) => {
-    console.log(editRoutineName)
-    console.log(editRoutineGoal)
     try {
-      const resp = await fetch(
-        `${APIURL}/routines/${routineId}`,
-        {
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-          body: JSON.stringify({
-            name: editRoutineName,
-            goal: editRoutineGoal
-          }),
-        }
-      );
-      const data = await resp.json()
-      console.log(data)
-      fetchRoutines()
-  } catch(error){
-    console.error(error)
-  }
-};
+      const resp = await fetch(`${APIURL}/routines/${routineId}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        body: JSON.stringify({
+          name: editRoutineName,
+          goal: editRoutineGoal,
+        }),
+      });
+      const data = await resp.json();
+
+      fetchRoutines();
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   const handleDeleteRoutine = async (routineId) => {
-    console.log(routineId);
     try {
       const resp = await fetch(`${APIURL}/routines/${routineId}`, {
         method: "DELETE",
@@ -210,31 +200,26 @@ const Myroutines = ({
             >
               Delete Routine
             </button>
-            
-              <button
-                
-                onClick={
-                  (() => setActivityFields(true))
-                }
-              >
-                Edit Routine
-              </button>
-              <input
-                type="text"
-                placeholder="name"
-                className={`${activityFields}`}
-                onChange={(event) => setEditRoutineName(event.target.value)}
-              />
-              <input
-                type="text"
-                placeholder="goal"
-                className={`${activityFields}`}
-                onChange={(event) => setEditRoutineGoal(event.target.value)}
-              />
-              <button onClick={() => handleEditRoutine(routine.id)}>
-                Submit
-              </button>
-            
+
+            <button onClick={() => setActivityFields(true)}>
+              Edit Routine
+            </button>
+            <input
+              type="text"
+              placeholder="name"
+              className={`${activityFields}`}
+              onChange={(event) => setEditRoutineName(event.target.value)}
+            />
+            <input
+              type="text"
+              placeholder="goal"
+              className={`${activityFields}`}
+              onChange={(event) => setEditRoutineGoal(event.target.value)}
+            />
+            <button onClick={() => handleEditRoutine(routine.id)}>
+              Submit
+            </button>
+
             <button
               value={routine.id}
               onClick={() => {

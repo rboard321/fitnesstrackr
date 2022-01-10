@@ -11,13 +11,11 @@ const Login = ({ setUserId, setLoggedin, loggedIn, setToken }) => {
 
   const [isMatched, setIsMatched] = useState(false);
   const params = useParams();
-  console.log(loggedIn);
   let navigate = useNavigate();
 
   function logIn(resp) {
-    
     if (resp) {
-      setUserId(resp.user.id)
+      setUserId(resp.user.id);
       setToken(resp.token);
       localStorage.setItem("token", resp.token);
       if (resp.token == "") {

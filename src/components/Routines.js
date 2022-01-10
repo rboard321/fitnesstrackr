@@ -1,12 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 
-const APIURL = `https://fitnesstrac-kr.herokuapp.com/api`
+const APIURL = `https://fitnesstrac-kr.herokuapp.com/api`;
 const { REACT_APP_API_URL } = process.env;
 
-const Routines = ({ setRoutines, routines, token, setToken }) => {
+const Routines = ({ setRoutines, routines, token }) => {
   const fetchRoutines = async () => {
-    
-    const resp = await fetch(`${REACT_APP_API_URL }/routines`);
+    const resp = await fetch(`${APIURL}/routines`);
     const data = await resp.json();
     if (data) {
       setRoutines(data);
