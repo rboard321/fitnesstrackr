@@ -9,7 +9,7 @@ const Homepage = () => {
     <>
       <h1>Welcome to Fitness Trac.kr</h1>
       <br></br>
-      <p>At fitness trac.kr we aim to put you in control of your fitness!ful</p>
+      <p>At fitness trac.kr we aim to put you in control of your fitness!</p>
       <br></br>
       <p>
         Please feel free to check out the public routines available to you in
