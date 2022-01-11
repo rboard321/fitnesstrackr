@@ -10,18 +10,31 @@ const Myroutines = ({
   MyRoutines,
   token,
   loggedIn,
+  setActivities
 }) => {
   const [routineName, setRoutineName] = useState("");
   const [routineGoal, setRoutineGoal] = useState("");
   const [routineId, setRoutineId] = useState();
   const [activityId, setActivityId] = useState();
-  const [count, setCount] = useState();
-  const [duration, setDuration] = useState();
+  const [count, setCount] = useState("");
+  const [duration, setDuration] = useState("");
   const [activityFields, setActivityFields] = useState(false);
   const [editingActivity, setEditingActivity] = useState(false);
   const [isPublic, setIsPublic] = useState(false);
   const [editRoutineName, setEditRoutineName] = useState("");
   const [editRoutineGoal, setEditRoutineGoal] = useState("");
+
+  const fetchActivities = async () => {
+    const resp = await fetch(`${APIURL}/activities`);
+    const data = await resp.json();
+    if (data) {
+      setActivities(data);
+    }
+  };
+
+  useEffect(() => {
+    fetchActivities();
+  }, [token])
 
   const fetchRoutines = async () => {
     const resp = await fetch(`${APIURL}/routines`);
@@ -58,6 +71,7 @@ const Myroutines = ({
   };
 
   const addActivities = async () => {
+    
     try {
       const resp = await fetch(`${APIURL}/routines/${routineId}/activities`, {
         method: "POST",
@@ -70,6 +84,9 @@ const Myroutines = ({
           duration: duration,
         }),
       });
+
+      setCount('')
+      setDuration('')
       fetchRoutines();
       setActivityFields(false);
     } catch (error) {
@@ -90,8 +107,9 @@ const Myroutines = ({
           goal: editRoutineGoal,
         }),
       });
-      const data = await resp.json();
-
+      setEditRoutineName("");
+      setEditRoutineGoal("");
+      setActivityFields(false);
       fetchRoutines();
     } catch (error) {
       console.error(error);
@@ -129,7 +147,8 @@ const Myroutines = ({
           }),
         }
       );
-
+      setCount('')
+      setDuration('')
       fetchRoutines();
       setEditingActivity(false);
     } catch (error) {
@@ -159,6 +178,7 @@ const Myroutines = ({
   function handleAddActivity(routine) {
     setActivityFields(true);
     setRoutineId(routine);
+    
   }
 
   return (
@@ -190,7 +210,7 @@ const Myroutines = ({
       ) : null}
       {MyRoutines.map((routine) =>
         userId === routine.creatorId ? (
-          <div className="routine" key={routine.id}>
+          <div className="routine" value={routine.id} key={routine.id}>
             <h2>{routine.name}</h2>
             <h4>{routine.goal}</h4>
             <h5>Creator: {routine.creatorName}</h5>
@@ -201,18 +221,21 @@ const Myroutines = ({
               Delete Routine
             </button>
 
-            <button onClick={() => setActivityFields(true)}>
+            <button value={routine.id} onClick={(event) =>  setActivityFields(true)}>
               Edit Routine
             </button>
+
             <input
               type="text"
               placeholder="name"
+              value={editRoutineName}
               className={`${activityFields}`}
               onChange={(event) => setEditRoutineName(event.target.value)}
             />
             <input
               type="text"
               placeholder="goal"
+              value={editRoutineGoal}
               className={`${activityFields}`}
               onChange={(event) => setEditRoutineGoal(event.target.value)}
             />
@@ -247,16 +270,19 @@ const Myroutines = ({
                   </option>
                 ))}
               </select>
-
+                  <br></br>
               <input
                 type="text"
                 placeholder="count"
+                value={count}
                 className={`${activityFields}`}
                 onChange={(event) => setCount(event.target.value)}
               />
+              <br></br>
               <input
                 type="text"
                 placeholder="duration"
+                value={duration}
                 className={`${activityFields}`}
                 onChange={(event) => setDuration(event.target.value)}
               />
@@ -278,12 +304,14 @@ const Myroutines = ({
                     <input
                       type="text"
                       placeholder="count"
+                      value={count}
                       className={`${editingActivity}`}
                       onChange={(event) => setCount(event.target.value)}
                     />
                     <input
                       type="text"
                       placeholder="duration"
+                      value={duration}
                       className={`${editingActivity}`}
                       onChange={(event) => setDuration(event.target.value)}
                     />

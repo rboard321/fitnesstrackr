@@ -88,6 +88,7 @@ const App = () => {
           element={
             <Myroutines
               setMyRoutines={setMyRoutines}
+              setActivities={setActivities}
               activities={activities}
               MyRoutines={MyRoutines}
               token={token}
